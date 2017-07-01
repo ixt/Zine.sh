@@ -1,33 +1,65 @@
-#!/bin/bash
-generate_samples(){
-    convert -background yellow    -fill white  -font Liberation-Sans \ 
-    -size 877x1240 -pointsize 100  -gravity center label:00 00.png 
-    convert -background orange    -fill white  -font Liberation-Sans \ 
-    -size 877x1240 -pointsize 100  -gravity center label:01 01.png 
-    convert -background orangered -fill white  -font Liberation-Sans \
-    -size 877x1240 -pointsize 100  -gravity center label:02 02.png 
-    convert -background red       -fill white  -font Liberation-Sans \ 
-    -size 877x1240 -pointsize 100  -gravity center label:03 03.png 
-    convert -background purple    -fill white  -font Liberation-Sans \ 
-    -size 877x1240 -pointsize 100  -gravity center label:04 04.png 
-    convert -background violet    -fill white  -font Liberation-Sans \ 
-    -size 877x1240 -pointsize 100  -gravity center label:05 05.png 
-    convert -background blue      -fill white  -font Liberation-Sans \ 
-    -size 877x1240 -pointsize 100  -gravity center label:06 06.png 
-    convert -background green     -fill white  -font Liberation-Sans \
-    -size 877x1240 -pointsize 100  -gravity center label:07 07.png 
+#!/usr/bin/env bash
+
+zinedir=$(dirname $0)
+cd $zinedir
+
+help_Text(){
+    echo "Usage: ./zine.sh [OPTIONS]"
+    echo "e.g. ./zine.sh -g"
+    echo "  -g generate examples"
+    echo "  -h This text"
+    echo "Use this utility to make and break zines"
+    echo "CC-0 NfN Orange"
 }
+
+make_sample(){
+    convert -background white -fill black -size 877x1240 -pointsize 100  -gravity center label:$1 input/$1.png 
+}
+
+generate_samples(){
+    make_sample 00
+    make_sample 01
+    make_sample 02
+    make_sample 03
+    make_sample 04
+    make_sample 05
+    make_sample 06
+    make_sample 07
+}
+
 compile_images(){
 convert -size 3508x2480 xc:white \
-        -draw "affine -1,0,0,-1, 877,1240 image over 0,0 0,0 '01.png' " \
-        -draw "affine -1,0,0,-1,1754,1240 image over 0,0 0,0 '02.png' " \
-        -draw "affine -1,0,0,-1,2631,1240 image over 0,0 0,0 '03.png' " \
-        -draw "affine -1,0,0,-1,3508,1240 image over 0,0 0,0 '04.png' " \
-        -draw "affine  1,0,0, 1,   0,1240 image over 0,0 0,0 '00.png' " \
-        -draw "affine  1,0,0, 1, 877,1240 image over 0,0 0,0 '07.png' " \
-        -draw "affine  1,0,0, 1,1754,1240 image over 0,0 0,0 '06.png' " \
-        -draw "affine  1,0,0, 1,2631,1240 image over 0,0 0,0 '05.png' " \
-        full.png 
+        -draw "affine -1,0,0,-1, 877,1240 image over 0,0 0,0 'input/01.png' " \
+        -draw "affine -1,0,0,-1,1754,1240 image over 0,0 0,0 'input/02.png' " \
+        -draw "affine -1,0,0,-1,2631,1240 image over 0,0 0,0 'input/03.png' " \
+        -draw "affine -1,0,0,-1,3508,1240 image over 0,0 0,0 'input/04.png' " \
+        -draw "affine  1,0,0, 1,   0,1240 image over 0,0 0,0 'input/00.png' " \
+        -draw "affine  1,0,0, 1, 877,1240 image over 0,0 0,0 'input/07.png' " \
+        -draw "affine  1,0,0, 1,1754,1240 image over 0,0 0,0 'input/06.png' " \
+        -draw "affine  1,0,0, 1,2631,1240 image over 0,0 0,0 'input/05.png' " \
+        output/full.png 
 }
+
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -g ) 
+            samples=1
+            ;;
+        -h )
+            helpText
+            ;;
+		-d )
+			displayZine=1
+			;;
+         * ) 
+            echo "Unknown ${1}"
+            helpText
+            exit 0
+            ;;
+    esac
+    shift
+done
+
+if [ $samples ]; then generate_samples; fi
 compile_images
-display full.png
+if [ $displayZine ]; then display output/full.png; fi
