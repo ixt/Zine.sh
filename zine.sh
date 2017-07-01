@@ -7,8 +7,10 @@ cd $zinedir
 help_Text(){
     echo "Usage: ./zine.sh [OPTIONS]"
     echo "e.g. ./zine.sh -g"
-    echo "  -g generate examples"
-    echo "  -h This text"
+    echo "  -g          generate examples"
+    echo "  -d          display after making"
+    echo "  -o [ file ] define output"
+    echo "  -h          This text"
     echo "Use this utility to make and break zines"
     echo "CC-0 NfN Orange"
 }
