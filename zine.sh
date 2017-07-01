@@ -4,15 +4,21 @@ zinedir=$(dirname $0)
 output="$zinedir/full.png"
 cd $zinedir
 
-help_Text(){
+helpText(){
     echo "Usage: ./zine.sh [OPTIONS]"
     echo "e.g. ./zine.sh -g"
     echo "  -g          generate examples"
     echo "  -d          display after making"
     echo "  -o [ file ] define output"
     echo "  -h          This text"
+    echo "  -v          verbosity"
     echo "Use this utility to make and break zines"
     echo "CC-0 NfN Orange"
+}
+
+verbose(){
+    VALUE=${@}
+    if [ $verbosity ]; then echo $VALUE; fi
 }
 
 make_sample(){
@@ -20,17 +26,15 @@ make_sample(){
 }
 
 generate_samples(){
-    make_sample 00
-    make_sample 01
-    make_sample 02
-    make_sample 03
-    make_sample 04
-    make_sample 05
-    make_sample 06
-    make_sample 07
+    verbose "Generating Samples..."
+    make_sample 00; make_sample 01
+    make_sample 02; make_sample 03
+    make_sample 04; make_sample 05
+    make_sample 06; make_sample 07
 }
 
 compile_images(){
+    verbose "Compiling images..."
 convert -size 3508x2480 xc:white \
         -draw "affine -1,0,0,-1, 877,1240 image over 0,0 0,0 'input/01.png' " \
         -draw "affine -1,0,0,-1,1754,1240 image over 0,0 0,0 'input/02.png' " \
@@ -47,17 +51,21 @@ while [ "$#" -gt 0 ]; do
     case "$1" in
 		-d)
             displayZine="1" 
-            echo "Displaying enabled"
+            verbose "Displaying enabled"
             ;;
         -g) 
-            echo "Samples enabled"
             samples="1" 
+            verbose "Samples enabled"
             ;;
         -h)
-            help_Text ;;
+            helpText ;;
 		-o) shift 
-            echo "Self chosen output enabled"
             output="${1}" 
+            verbose "Self chosen output enabled"
+            ;;
+        -v)
+            verbosity="1"
+            verbose "Verbosity enabled"
             ;;
         *) 
             echo "Unknown ${1}"
