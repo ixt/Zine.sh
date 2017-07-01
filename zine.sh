@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 zinedir=$(dirname $0)
+output="$zinedir/full.png"
 cd $zinedir
 
 help_Text(){
@@ -37,21 +38,26 @@ convert -size 3508x2480 xc:white \
         -draw "affine  1,0,0, 1, 877,1240 image over 0,0 0,0 'input/07.png' " \
         -draw "affine  1,0,0, 1,1754,1240 image over 0,0 0,0 'input/06.png' " \
         -draw "affine  1,0,0, 1,2631,1240 image over 0,0 0,0 'input/05.png' " \
-        output/full.png 
+        $output 
 }
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
-        -g ) 
-            samples=1
+		-d)
+            displayZine="1" 
+            echo "Displaying enabled"
             ;;
-        -h )
-            helpText
+        -g) 
+            echo "Samples enabled"
+            samples="1" 
             ;;
-		-d )
-			displayZine=1
-			;;
-         * ) 
+        -h)
+            help_Text ;;
+		-o) shift 
+            echo "Self chosen output enabled"
+            output="${1}" 
+            ;;
+        *) 
             echo "Unknown ${1}"
             helpText
             exit 0
@@ -62,4 +68,4 @@ done
 
 if [ $samples ]; then generate_samples; fi
 compile_images
-if [ $displayZine ]; then display output/full.png; fi
+if [ $displayZine ]; then display $output; fi
